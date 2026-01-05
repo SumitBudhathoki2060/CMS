@@ -1,22 +1,24 @@
 <?php
+require "config.php";
+
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-require "config.php";
-
 $headers = getallheaders();
+
 if (!isset($headers['Authorization'])) {
     http_response_code(401);
-    exit("No token");
+    exit("Unauthorized");
 }
 
 $token = str_replace("Bearer ", "", $headers['Authorization']);
 
 try {
-    $decoded = JWT::decode($token, new Key($JWT_SECRET, 'HS256'));
-    // access granted
-    echo json_encode(["user_id" => $decoded->id, "role" => $decoded->role]);
+    $user = JWT::decode($token, new Key($JWT_SECRET, 'HS256'));
 } catch (Exception $e) {
     http_response_code(401);
-    echo "Invalid token";
+    exit("Invalid token");
 }
+// Access granted, you can use $user->id and $user->role
+echo json_encode(["user_id" => $user->id, "role" => $user->role]);
+?>

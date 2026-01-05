@@ -1,4 +1,7 @@
 <?php
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
 require "config.php";
 
 $data = json_decode(file_get_contents("php://input"), true);
